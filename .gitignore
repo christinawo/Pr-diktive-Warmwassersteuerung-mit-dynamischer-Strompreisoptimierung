@@ -1,0 +1,22 @@
+# Virtual environment
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# IDE
+.vscode/
+.idea/
+
+# Databases
+*.db
+
+# TensorFlow / trained models
+*.keras
+*.h5
+
+# OS files
+.DS_Store
+Thumbs.db
