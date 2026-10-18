@@ -1,0 +1,54 @@
+Project Description:
+This project implements and evaluates different control strategies for an electric hot water storage system. The main objective is to reduce electricity costs by considering dynamic electricity prices while maintaining enough hot water availability. 
+A predictive control strategy uses a Sarima model to forecast the hot water demand and determine suitable heating periods.
+
+
+Project Structure:
+The project is organized into the following directories:
+controller/ --> Implementation of the different heating strategies
+data/ --> Electricity price data, database functions and simulation parameters
+demand_profile/ --> Synthetic generation of households with different hot water demand patterns
+evaluation/ --> Evaluation metrics, price volatility scenarios and excel export
+forecasting/ --> Sarima forecasting and data preprocessing
+models/ --> Thermal model of the boiler
+main.py --> Main simulation program
+requirements.txt --> Required Python packages
+
+
+Control Strategies:
+This project consists of five heating control strategies, four of which function as baseline strategies for the predictive strategy
+1) Dummy Strategy: A very simple strategy, which uses a fixed heating period (5:00 - 7:00 a.m.), regardless of demand
+2) Temperature Strategy: Starts heating the boiler if the temperature falls below a defined temperature (45°C)
+3) Threshold Price Strategy: Starts heating if the price is below a defined threshold (10 ct/kWh)
+4) Cheapest Hour Strategy:  Schedules heating during the n-cheapest hours of the day (n=3)
+5) Predictive Strategy: Uses Sarima demand forecasts and electricity prices to determine suitable heating periods
+
+
+Predictive Control and Forecasting:
+The predictive control strategy uses a Seasonal Autoregressive Integrated Moving Average (Sarima) model to forecast future hot water demand based on historical consumption data. Sarima is a time series forecasting model that considers both previous observations and recurring seasonal patterns. 
+The Sarima model parameters are estimated using a two-stage grid search. First, a coarse grid search is performed to find suitable autoregressive parameters. Afterwards, a fine grid search is performed around the best parameters to improve the estimation. The parameters are selected by minimizing the sum of squared errors (SSE) between the model predictions and the historical demand values.
+The function sarima_forecast() then generates future demand predictions recursively. Each predicted value is added to the available data and used to calculate the following predictions.
+The predictive controller uses the demand forecast, electricity prices and the current boiler temperature to determine suitable heating periods. It operates with a planning horizon of up to 40 time steps (10 hours at 15-minute intervals).
+First, predict_temperature_without_heating() simulates the boiler temperature development without heating, considering predicted demand and thermal losses. The function find_first_critical_step() identifies the first time step at which the temperature falls below the minimum temperature.
+If a critical temperature is predicted, find_required_heating_steps() uses a heuristic approach to iteratively select the cheapest available heating periods before the temperature falls below the minimum. After each selected heating step, the temperature development is simulated again until no further heating is required or no additional heating steps can be selected.
+If no critical temperature is predicted, the controller can still activate heating when the current electricity price is among the cheapest 25% of the upcoming prices, the predicted demand exceeds 20 liters and the boiler temperature is below 60°C.
+Finally, predictive_strategy() determines whether the heater should be activated in the current time step.
+
+
+Demand Profiles:
+This project consists of six demand profiles, of which three simulate a family household and three simulate a single household. 
+The households are divided into households with a bathtub, without a bathtub and with irregular demand. The hot water demand is generated stochastically, meaning that the timing and amount of hot water vary randomly. The demand is divided into small draw events (e.g. washing hands), medium draw events (e.g. doing the dishes), shower events and if available bathing events.
+Each person has a usual shower time, which is either in the morning or evening. The actual shower time can vary around this usual time.
+The irregular demand profiles represent households with less predictable consumption patterns. In these profiles hot water draw events occur at more random times instead of following a regular daily routine.
+
+
+Evaluation:
+The performance of the different strategies is evaluated using the following metrics:
+-> Electricity Costs: Total electricity costs
+-> Comfort: Percentage of simulation time steps in which the water temperature remains above the defined minumum temperature (45°C)
+-> Energy Consumption: Total electrical energy used for heating 
+-> CO2 Emissions: Estimated emissions based on electricity consumption and a constant emission factor
+-> Runtime: Computational runtime of the simulation
+-> Cost Savings: Savings of the predictive strategy compared to the baseline strategies
+The evaluation also considers three different price volatility scenarios: original prices, low volatility and high volatility. Low and high volatility are simulated by modifying the original prices using scaling factors (Low: 0.5 and High: 1.5).
+The simulation results are then exported to an Excel file.

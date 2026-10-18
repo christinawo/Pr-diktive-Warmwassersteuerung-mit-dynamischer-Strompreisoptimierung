@@ -1,4 +1,5 @@
 # Boiler dimensions are based on the VGE Eco Tank series
+# Emission factor is based on a paper from the umweltbundesamt (https://www.umweltbundesamt.at/fileadmin/site/publikationen/rep0888.pdf)
 
 PARAMS = {
     "volume_liters": 200.0,
@@ -13,7 +14,8 @@ PARAMS = {
     "U_value": 0.4,
     "A_value": 2.82,
     "time_step_seconds": 900,
-    "simulation_hours": 24
+    "simulation_hours": 24,
+    "emission_factor": 0.226
 }
 
 

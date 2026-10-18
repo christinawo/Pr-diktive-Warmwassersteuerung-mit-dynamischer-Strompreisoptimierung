@@ -1,0 +1,6 @@
+numpy
+pandas
+statsmodels     # Just for the comparison, this package is not needed in the final implementation
+matplotlib
+openpyxl
+requests

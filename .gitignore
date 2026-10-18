@@ -1,22 +1,16 @@
-# Virtual environment
-venv/
-.venv/
-
 # Python
 __pycache__/
-*.py[cod]
+*.pyc
+.venv/
+venv/
 
-# IDE
-.vscode/
-.idea/
+# Simulation results
+evaluation/results/
 
-# Databases
+# Local databases
 *.db
+*.sqlite
+*.sqlite3
 
-# TensorFlow / trained models
-*.keras
-*.h5
-
-# OS files
-.DS_Store
-Thumbs.db
+# Editor files
+.vscode/
